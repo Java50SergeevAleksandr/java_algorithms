@@ -73,7 +73,7 @@ public class InterviewTasks {
 			}
 		}
 
-		for (int i = helper.length - 1; i > 0; i--) {
+		for (int i = helper.length - 1; i >= 0; i--) {
 			if (helper[i] == codeExist) {
 				res = (short) i;
 			}
