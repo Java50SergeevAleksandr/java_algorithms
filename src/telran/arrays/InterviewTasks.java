@@ -64,19 +64,23 @@ public class InterviewTasks {
 				helper[array[i]] = 1;
 			}
 
-			if (array[i] < 0 && helper[array[i]] == 1) {
-				helper[array[i]] = codeExist;
+			if (array[i] < 0 && helper[Math.abs(array[i])] == 1) {
+				helper[Math.abs(array[i])] = codeExist;
 			}
 
-			if (array[i] < 0 && helper[array[i]] != codeExist) {
-				helper[array[i]] = -1;
+			if (array[i] < 0 && helper[Math.abs(array[i])] != codeExist) {
+				helper[Math.abs(array[i])] = -1;
 			}
 		}
 
-		for (int i = helper.length - 1; i >= 0; i--) {
+		int i = helper.length - 1;
+		
+		while (i >= 0) {
 			if (helper[i] == codeExist) {
 				res = (short) i;
+				i = -1;
 			}
+			i--;
 		}
 
 		return res;
