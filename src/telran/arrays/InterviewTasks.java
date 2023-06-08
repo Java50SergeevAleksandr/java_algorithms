@@ -47,10 +47,8 @@ public class InterviewTasks {
 	}
 
 	public static short getMaxWithNegativePresentation(short[] array) {
-
 		// returns maximal positive number having an negative value with the same abs
 		// value, if no such numbers returns -1
-
 		short res = -1;
 		byte codeExist = 3;
 		byte[] helper = new byte[Short.MAX_VALUE];
@@ -74,13 +72,29 @@ public class InterviewTasks {
 		}
 
 		int i = helper.length - 1;
-		
+
 		while (i >= 0) {
 			if (helper[i] == codeExist) {
 				res = (short) i;
 				i = -1;
 			}
 			i--;
+		}
+
+		return res;
+	}
+
+	public static short getMaxWithNegativePresentation1Pass(short[] array) {
+		// returns maximal positive number having an negative value with the same abs
+		// value, if no such numbers returns -1
+		short res = -1;
+		byte[] helper = new byte[Short.MAX_VALUE];
+
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] < 0 && helper[Math.abs(array[i])] == 1 || array[i] > 0 && helper[Math.abs(array[i])] == -1) {
+				res = (short) Math.max(res, Math.abs(array[i]));
+			}
+			helper[Math.abs(array[i])] = (byte) (array[i] < 0 ? -1 : 1);
 		}
 
 		return res;
