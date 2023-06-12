@@ -28,7 +28,6 @@ public class ValidBrackets {
 	}
 
 	private static boolean checkBrackets(String text) {
-		boolean res = true;
 		int level = 0;
 		char[] arrayLevels = new char[text.length()];
 
@@ -45,8 +44,7 @@ public class ValidBrackets {
 			}
 		}
 
-		res = level == 0 ? true : false;
-		return res;
+		return level == 0 ? true : false;
 	}
 
 	private static char mirror(char c) {
