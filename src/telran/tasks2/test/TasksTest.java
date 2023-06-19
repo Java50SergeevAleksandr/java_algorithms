@@ -19,8 +19,10 @@ class TasksTest {
 		assertFalse(Anagram.isAnagram(test1, "abcde"));
 		assertFalse(Anagram.isAnagram(test1, "abcz"));
 		assertFalse(Anagram.isAnagram(test1, "Aaaa"));
+		String test2 = "";
+		assertTrue(Anagram.isAnagram(test2, ""));
 	}
-	
+
 	@Test
 	void BracketsTest() {
 		String test1 = "aaaaaa (sdfsdfdsf[dfd(f)f] zcvzxcv {{[ghjk]}} asd )";
