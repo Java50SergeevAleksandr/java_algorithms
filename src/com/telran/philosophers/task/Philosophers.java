@@ -1,5 +1,7 @@
 package com.telran.philosophers.task;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /*
 "The Dining Philosophers" Task – Resolve the Deadlock in class Philosophers
 
@@ -34,16 +36,17 @@ public class Philosophers {
 
 		Philosopher[] philosophers = new Philosopher[5];
 		Object[] forks = new Object[philosophers.length];
-
+		AtomicBoolean[] accessList = new AtomicBoolean[philosophers.length];
 		for (int i = 0; i < forks.length; i++) {
 			forks[i] = new Object();
+			accessList[i] = new AtomicBoolean();
 		}
 
 		for (int i = 0; i < philosophers.length; i++) {
 			Object leftFork = forks[i];
 			Object rightFork = forks[(i + 1) % forks.length];
 
-			philosophers[i] = new Philosopher(leftFork, rightFork);
+			philosophers[i] = new Philosopher(leftFork, rightFork, i, accessList);
 
 			Thread t = new Thread(philosophers[i], "Philosopher " + (i + 1));
 			t.start();
@@ -54,10 +57,14 @@ public class Philosophers {
 
 		private final Object leftFork;
 		private final Object rightFork;
+		int number;
+		AtomicBoolean[] accessList;
 
-		public Philosopher(Object leftFork, Object rightFork) {
+		public Philosopher(Object leftFork, Object rightFork, int number, AtomicBoolean[] accessList) {
 			this.leftFork = leftFork;
 			this.rightFork = rightFork;
+			this.accessList = accessList;
+			this.number = number;
 		}
 
 		private void doAction(String action) throws InterruptedException {
@@ -69,8 +76,17 @@ public class Philosophers {
 		public void run() {
 			try {
 				while (true) {
+
 					// thinking
 					doAction(System.nanoTime() + ": Thinking");
+					while (accessList[number].get()) {
+						doAction(System.nanoTime() + ": Waiting fork");
+					}
+					synchronized (accessList) {
+						accessList[(number + 1) % accessList.length].set(true);
+						accessList[(number + accessList.length - 1) % accessList.length].set(true);
+					}
+
 					synchronized (leftFork) {
 						doAction(System.nanoTime() + ": Picked up left fork");
 						synchronized (rightFork) {
@@ -81,6 +97,10 @@ public class Philosophers {
 						}
 						// Back to thinking
 						doAction(System.nanoTime() + ": Put down left fork. Back to thinking");
+					}
+					synchronized (accessList) {
+						accessList[(number + 1) % accessList.length].set(false);
+						accessList[(number + accessList.length - 1) % accessList.length].set(false);
 					}
 				}
 			} catch (InterruptedException e) {
