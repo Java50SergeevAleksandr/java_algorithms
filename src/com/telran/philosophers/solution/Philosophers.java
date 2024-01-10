@@ -1,4 +1,4 @@
-package com.telran.philosophers.task;
+package com.telran.philosophers.solution;
 
 /*
 "The Dining Philosophers" Task – Resolve the Deadlock in class Philosophers
@@ -40,8 +40,10 @@ public class Philosophers {
 		}
 
 		for (int i = 0; i < philosophers.length; i++) {
-			Object leftFork = forks[i];
-			Object rightFork = forks[(i + 1) % forks.length];
+			int forkId1 = i;
+			int forkId2 = (i + 1) % forks.length;
+			Object leftFork = forks[Math.min(forkId1, forkId2)];
+			Object rightFork = forks[Math.max(forkId1, forkId2)];
 
 			philosophers[i] = new Philosopher(leftFork, rightFork);
 
