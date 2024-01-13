@@ -13,6 +13,7 @@ import java.util.stream.Stream;
  */
 public class Semaphore {
 	private int resourceCount;
+	private int usedResources = 0;
 
 	public Semaphore(int resourceCount) {
 		this.resourceCount = resourceCount;
@@ -25,19 +26,23 @@ public class Semaphore {
 	 * @throws InterruptedException
 	 */
 	public synchronized void acquire() throws InterruptedException {
-		// TODO: implement method
+		if (usedResources == resourceCount) {
+			wait();
+		}
+		usedResources++;
 	}
 
 	/**
 	 * Releases previously acquired resource. Never suspends current thread.
 	 */
 	public synchronized void release() {
-		// TODO: implement method
+		usedResources--;
+		notify();
 	}
 
 	/**
-	 * Simple test: 10 threads are competing to repeatedly use 5 resources.
-	 * See that actual number of simultaneously used resources never more than 5.
+	 * Simple test: 10 threads are competing to repeatedly use 5 resources. See that
+	 * actual number of simultaneously used resources never more than 5.
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		final int RESOURCE_COUNT = 5;
