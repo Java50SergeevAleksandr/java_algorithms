@@ -10,7 +10,6 @@ import java.util.stream.Stream;
  */
 public class Barrier {
 	private final int threadsCount;
-	private int waitingThreads = 0;	
 
 	public Barrier(int threadsCount) {
 		this.threadsCount = threadsCount;
@@ -21,15 +20,7 @@ public class Barrier {
 	 * threads reach this point, and only when continues to run.
 	 */
 	public synchronized void await() {
-		try {
-			waitingThreads++;
-			if (waitingThreads != threadsCount) {
-				wait();
-			}
-			notifyAll();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// TODO: implement the method
 	}
 
 	/**

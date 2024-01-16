@@ -5,37 +5,42 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Class Barrier allows a set of threads to all wait for each other to reach a common barrier point.
+ * Class Barrier allows a set of threads to all wait for each other to reach a
+ * common barrier point.
  */
 public class Barrier {
 	private final int threadsCount;
+	private int waitingThreads = 0;
 
 	public Barrier(int threadsCount) {
 		this.threadsCount = threadsCount;
 	}
 
 	/**
-	 * This is common barrier wait point.
-	 * Each thread waits until all participant threads reach this point, 
-	 * and only when continues to run.
+	 * This is common barrier wait point. Each thread waits until all participant
+	 * threads reach this point, and only when continues to run.
 	 */
 	public synchronized void await() {
-		// TODO: implement the method
+		try {
+			waitingThreads++;
+			if (waitingThreads != threadsCount) {
+				wait();
+			}
+			notifyAll();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 *  Simple test: the number of threads wait one another and "pass barrier" only when last thread arrives
-	 *  Example of output:
-	 *  2296 Thread Thread-3 arrived to barrrier
-	 *  2339 Thread Thread-4 arrived to barrrier
-	 *  2646 Thread Thread-1 arrived to barrrier
-	 *  4048 Thread Thread-2 arrived to barrrier
-	 *  9598 Thread Thread-0 arrived to barrrier  // last arrived
-	 *  9599 Thread Thread-0 passed the barrrier  // below all threads simultaneously passed the barrier
-	 *  9599 Thread Thread-3 passed the barrrier
-	 *  9599 Thread Thread-4 passed the barrrier
-	 *  9599 Thread Thread-1 passed the barrrier
-	 *  9599 Thread Thread-2 passed the barrrier
+	 * Simple test: the number of threads wait one another and "pass barrier" only
+	 * when last thread arrives Example of output: 2296 Thread Thread-3 arrived to
+	 * barrrier 2339 Thread Thread-4 arrived to barrrier 2646 Thread Thread-1
+	 * arrived to barrrier 4048 Thread Thread-2 arrived to barrrier 9598 Thread
+	 * Thread-0 arrived to barrrier // last arrived 9599 Thread Thread-0 passed the
+	 * barrrier // below all threads simultaneously passed the barrier 9599 Thread
+	 * Thread-3 passed the barrrier 9599 Thread Thread-4 passed the barrrier 9599
+	 * Thread Thread-1 passed the barrrier 9599 Thread Thread-2 passed the barrrier
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		final int THREADS_COUNT = 5;
@@ -55,9 +60,7 @@ public class Barrier {
 					Thread.currentThread().getName());
 		};
 
-		List<Thread> threads = Stream.generate(() -> new Thread(r))
-				.limit(THREADS_COUNT)
-				.peek(Thread::start)
+		List<Thread> threads = Stream.generate(() -> new Thread(r)).limit(THREADS_COUNT).peek(Thread::start)
 				.collect(Collectors.toList());
 
 		for (Thread t : threads) {
