@@ -21,15 +21,15 @@ public class Barrier {
 	 * threads reach this point, and only when continues to run.
 	 */
 	public synchronized void await() {
+		waitingThreads++;
 		try {
-			waitingThreads++;
-			if (waitingThreads != threadsCount) {
+			while (waitingThreads < threadsCount) {
 				wait();
 			}
-			notifyAll();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		notifyAll();
 	}
 
 	/**
